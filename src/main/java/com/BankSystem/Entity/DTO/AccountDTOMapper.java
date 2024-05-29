@@ -12,7 +12,8 @@ public class AccountDTOMapper implements Function<Account, AccountDTO> {
         return new AccountDTO(
                 acc.getAccountId(),
                 acc.getUsername(),
-                acc.getAccountBalance()
+                acc.getAccountBalance(),
+                acc.getBank()
         );
     }
 }

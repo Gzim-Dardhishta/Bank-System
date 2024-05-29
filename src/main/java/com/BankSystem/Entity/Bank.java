@@ -1,5 +1,6 @@
 package com.BankSystem.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Bank {
     private int id;
     private String bankName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "bank", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Account> accounts = new ArrayList<>();
     private double totalTransactionFee;
@@ -81,6 +83,18 @@ public class Bank {
 
     public void setTransactionPercentFee(double transactionPercentFee) {
         this.transactionPercentFee = transactionPercentFee;
+    }
+
+    public void addAccount(Account account) {
+        accounts.add(account);
+    }
+
+    public void updateTotalTransactionFee(double fee) {
+        totalTransactionFee += fee;
+    }
+
+    public void updateTotalTransferAmount(double amount) {
+        totalTransferAmount += amount;
     }
 
     @Override

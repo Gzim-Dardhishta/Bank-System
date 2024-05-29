@@ -2,6 +2,8 @@ package com.BankSystem.Entity;
 
 import com.BankSystem.Exceptions.RequestValidationException;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +20,8 @@ public class Account implements AccountOperations {
     private double accountBalance;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Transaction> transactions;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Bank bank;
 
     public Account() {
@@ -59,10 +62,25 @@ public class Account implements AccountOperations {
         this.transactions = transactions;
     }
 
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+    }
+
     @Override
     public void deposit(double amount) throws RequestValidationException {
         if (amount > 5000) {
             throw new RequestValidationException("You can not deposit more than 5000$ via ATM");
+        }
+        if (amount < 5) {
+            throw new RequestValidationException("You can not deposit less than 5$ via ATM");
         }
         accountBalance += amount;
         var reason = "Deposit " + amount + "$ " + LocalDateTime.now();
@@ -82,16 +100,14 @@ public class Account implements AccountOperations {
         addTransaction(new Transaction(amount, accountId, 0, reason));
     }
 
-    protected void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
-    }
-
     @Override
     public String toString() {
         return "Account{" +
                 "accountId=" + accountId +
                 ", username='" + username + '\'' +
                 ", accountBalance=" + accountBalance +
+                ", transactions=" + transactions +
+                ", bank=" + bank +
                 '}';
     }
 }

@@ -29,12 +29,30 @@ public class BankService {
 
     public void createBank(BankRequest bankRequest) {
         Bank bank = new Bank();
-        if (bankRequest.bankName() == null || bankRequest.transactionFlatFee() < 1 || bankRequest.transactionPercentFee() < 1) {
-            throw new RequestValidationException("All fields are required");
+        if (bankRequest.bankName() == null) {
+            throw new RequestValidationException("Bank name is required");
+        }
+        if(bankRequest.transactionFlatFee() < 1) {
+            throw new RequestValidationException("Transaction Flat Fee is required and must be more than 5");
+        }
+        if (bankRequest.transactionPercentFee() < 1) {
+            throw new RequestValidationException("Transaction Percent Fee is required  and must be between 1 and 8");
         }
         bank.setBankName(bankRequest.bankName());
         bank.setTransactionFlatFee(bankRequest.transactionFlatFee());
         bank.setTransactionPercentFee(bankRequest.transactionPercentFee());
         bankRepository.save(bank);
+    }
+
+    public double getTotalTransactionFeeAmount(int bankId) {
+        Bank bank = getBank(bankId);
+
+        return bank.getTotalTransactionFee();
+    }
+
+    public double getTotalTransferAmount(int bankId) {
+        Bank bank = getBank(bankId);
+
+        return bank.getTotalTransferAmount();
     }
 }

@@ -1,6 +1,7 @@
 package com.BankSystem.Controller;
 
 import com.BankSystem.Entity.Bank;
+import com.BankSystem.Payload.BankRequest;
 import com.BankSystem.Service.BankService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class BankController {
 
     @PostMapping("add")
     public ResponseEntity<?> addBank(
-            @RequestBody BankService.BankRequest bankRequest
+            @RequestBody BankRequest bankRequest
             ) {
         bankService.createBank(bankRequest);
 
